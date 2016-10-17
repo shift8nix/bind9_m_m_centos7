@@ -1,6 +1,6 @@
 galaxy_info:
   author: Edgars Simanis
-  description: Install bind DNS server as master-master on CentOS7
+  description: Install bind authoritative DNS server as master-master on CentOS7
   company: 
 
   license: "license (BSD)"
