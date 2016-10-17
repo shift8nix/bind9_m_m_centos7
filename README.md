@@ -3,7 +3,7 @@ bind9_m_m_centos7
 
 Sets up master master bind 9 DNS server on CentOS7
 
-Idea is to avoid using slave servers. Instead provison multiple masters.
+Idea is to avoid using slave servers. Instead provision multiple masters.
 Keeps the whole setup very simple.
 
 Requirements
