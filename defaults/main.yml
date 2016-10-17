@@ -1,0 +1,5 @@
+---
+# defaults file for bind_centos7_cwings
+# trusted ip's for trusted view
+ns1_ip:
+ns2_ip:

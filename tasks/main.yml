@@ -1,0 +1,93 @@
+---
+# tasks file for bind centos7 master/master setup
+
+- name: install bind packages
+  yum: name="{{item}}" state=latest
+  with_items:
+     - bind
+     - bind-utils
+
+
+- name: create dir /var/log/named
+  file: 
+   path: /var/log/named
+   state: directory
+   mode: 0755
+   owner: named
+   group: named
+   setype: named_log_t
+   seuser: system_u
+
+
+
+- name: create dir /var/named/zones
+  file: 
+   path: /var/named/zones
+   state: directory
+   mode: 0770
+   owner: named
+   group: named
+   setype: named_zone_t
+   seuser: system_u
+   
+
+- name: get list of zone files in templates/zones
+  local_action: command ls "{{role_path}}"/templates/zones
+  register: zones_in_templates
+  changed_when: false
+  tags:
+   - update
+  
+
+- name: get list of zone files on server
+  command: ls /var/named/zones
+  register: zones_on_server
+  changed_when: false
+  tags: 
+   - update
+
+- name: remove zone file not present in ansible templates dir
+  file: path=/var/named/zones/"{{item}}" state=absent
+  with_items: zones_on_server.stdout_lines
+  when: item not in zones_in_templates.stdout_lines
+  tags:
+   - update
+  notify: restart named
+
+
+- name: copy zone files
+  template:
+    src: "{{role_path}}/templates/zones/{{item}}"
+    dest: "/var/named/zones/{{item}}"
+    owner: root
+    group: named
+    mode: "0640"
+    setype: named_zone_t
+    seuser: system_u
+    validate: '/sbin/named-checkzone -d "{{ item }}" %s'
+  with_items: "{{ zones_in_templates.stdout_lines }}"
+  notify: restart named
+  tags:
+   - update
+
+
+- name: replace named.conf
+  template:
+    src: "{{role_path}}/templates/named.conf"
+    dest: "/etc/named.conf"
+    owner: root
+    group: named
+    mode: '0640'
+    setype: named_conf_t
+    seuser: system_u
+    validate: 'named-checkconf %s'
+  notify: restart named
+  tags:
+   - update
+
+- name: allow tcp und udp 53 through firewall
+  firewalld: service=dns permanent=true state=enabled immediate=yes
+
+- name: enable and start named
+  service: name=named state=started enabled=yes
+

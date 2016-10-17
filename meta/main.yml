@@ -1,0 +1,15 @@
+galaxy_info:
+  author: Edgars Simanis
+  description: Install bind DNS server as master-master on CentOS7
+  company: 
+
+  license: "license (BSD)"
+
+  min_ansible_version: 1.2
+
+  platforms:
+  - name: EL
+    versions:
+    - 7
+  galaxy_tags:
+    - bind

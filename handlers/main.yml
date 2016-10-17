@@ -1,0 +1,4 @@
+---
+# handlers file for bind_centos7_cwings
+- name: restart named
+  service: name=named state=restarted
