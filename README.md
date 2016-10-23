@@ -28,7 +28,7 @@ None
 
 Example Playbook
 ----------------
-
+```
 ---
 - hosts: production
   roles:
@@ -37,11 +37,11 @@ Example Playbook
    - ns1_ip: 10.0.0.2
    - ns2_ip: 10.0.0.3
   serial: 1
-
+```
 // To just update zones run
-
+```
 ansible-playbook main.yml --tags "update"
-
+```
 
 License
 -------
